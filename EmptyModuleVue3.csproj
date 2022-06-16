@@ -104,6 +104,12 @@
   <ItemGroup>
     <Content Include="BuildScripts\custom.xml" />
     <Content Include="BuildScripts\MSBuild.Community.Tasks.dll" />
+    <Content Include="client-app\babel.config.js" />
+    <Content Include="client-app\public\favicon.ico" />
+    <Content Include="client-app\public\index.html" />
+    <Content Include="client-app\src\assets\logo.png" />
+    <Content Include="client-app\src\main.js" />
+    <Content Include="client-app\vue.config.js" />
     <Content Include="License.txt" />
     <Content Include="module.css" />
     <Content Include="ReleaseNotes.txt" />
@@ -147,6 +153,16 @@
   <ItemGroup>
     <Content Include="Sql\00.00.01.SqlDataProvider" />
     <Content Include="Sql\Uninstall.SqlDataProvider" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\src\App.vue" />
+    <Content Include="client-app\src\components\HelloWorld.vue" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\jsconfig.json" />
+    <Content Include="client-app\package-lock.json" />
+    <Content Include="client-app\package.json" />
+    <Content Include="client-app\README.md" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
