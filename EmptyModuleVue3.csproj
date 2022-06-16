@@ -170,6 +170,8 @@
     <PackageName>EmptyModuleVue3</PackageName>
   </PropertyGroup>
   <Import Project="BuildScripts\ModulePackage.Targets" />
+  <Target Name="BeforeBuild" DependsOnTargets="BuildVueClientApp">
+  </Target>
   <Target Name="AfterBuild" DependsOnTargets="PackageAndDeploy">
   </Target>
 </Project>
