@@ -113,6 +113,12 @@
     <Content Include="License.txt" />
     <Content Include="module.css" />
     <Content Include="ReleaseNotes.txt" />
+    <Content Include="settings-app\babel.config.js" />
+    <Content Include="settings-app\public\favicon.ico" />
+    <Content Include="settings-app\public\index.html" />
+    <Content Include="settings-app\src\assets\logo.png" />
+    <Content Include="settings-app\src\main.js" />
+    <Content Include="settings-app\vue.config.js" />
     <Content Include="_external\DotNetNuke.dll" />
     <Content Include="_external\DotNetNuke.Web.dll" />
     <Content Include="_external\DotNetNuke.WebUtility.dll" />
@@ -163,6 +169,14 @@
     <Content Include="client-app\package-lock.json" />
     <Content Include="client-app\package.json" />
     <Content Include="client-app\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="settings-app\jsconfig.json" />
+    <Content Include="settings-app\package-lock.json" />
+    <Content Include="settings-app\package.json" />
+    <Content Include="settings-app\README.md" />
+    <Content Include="settings-app\src\App.vue" />
+    <Content Include="settings-app\src\components\HelloWorld.vue" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

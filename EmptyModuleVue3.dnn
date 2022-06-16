@@ -62,11 +62,11 @@
                     <viewOrder>0</viewOrder>
                   </moduleControl>
                   <moduleControl>
-                    <controlKey>Settings</controlKey>
+                    <controlKey>QuickSettings</controlKey>
                     <controlSrc>DesktopModules/40Fingers/EmptyModuleVue3/Settings.html</controlSrc>
                     <supportsPartialRendering>False</supportsPartialRendering>
                     <controlTitle>EmptyModuleVue3 Settings</controlTitle>
-                    <controlType>Edit</controlType>
+                    <controlType>Admin</controlType>
                     <iconFile />
                     <helpUrl />
                     <viewOrder>0</viewOrder>
