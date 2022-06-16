@@ -1,17 +1,21 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <ClientPage />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+    import ClientPage from './components/ClientPage.vue'
 
-export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+    export default {
+        name: 'App',
+        components: {
+            ClientPage
+        },
+        mounted: function () {
+            this.moduleid = Number(this.$refs.approot.parentNode.attributes["data-moduleid"].nodeValue);
+            this.tabid = Number(this.$refs.approot.parentNode.attributes["data-tabid"].nodeValue);
+            this.dnnEditMode = this.$refs.approot.parentNode.attributes["data-editmode"].nodeValue.toLowerCase() === "true";
+        }
+    }
 </script>
 
 <style>
