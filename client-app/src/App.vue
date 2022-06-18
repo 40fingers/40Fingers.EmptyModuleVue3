@@ -2,26 +2,24 @@
     <ClientPage />
 </template>
 
-<script>
-    import ClientPage from './components/ClientPage.vue'
+<script setup>
+    //import { onMounted } from 'vue';
 
+    //onMounted(() => {
+    //})
+</script>
+
+<script>
+    import ClientPage from './components/ClientPage.vue';
     export default {
         name: 'App',
         components: {
             ClientPage
         },
-        data: function () {
-            return {
-                moduleid: 0,
-                tabid: 0,
-                dnnEditMode: false,
-            }
-        },
-        mounted: function () {
-            this.moduleid = Number(this.$el.parentNode.attributes["data-moduleid"].nodeValue);
-            this.tabid = Number(this.$el.parentNode.attributes["data-tabid"].nodeValue);
-            this.dnnEditMode = this.$el.parentNode.attributes["data-editmode"].nodeValue.toLowerCase() === "true";
-        }
+        // you can access the instance as the function's first argument
+        // data: (inst) => { return { field: inst.someProp }; }
+        // or use
+        // data: () => { return { bla: 0, blo: true } }
     }
 </script>
 
