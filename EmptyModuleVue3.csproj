@@ -107,6 +107,7 @@
     <Content Include="client-app\babel.config.js" />
     <Content Include="client-app\public\favicon.ico" />
     <Content Include="client-app\public\index.html" />
+    <Content Include="client-app\src\assets\api.js" />
     <Content Include="client-app\src\main.js" />
     <Content Include="client-app\vue.config.js" />
     <Content Include="License.txt" />
@@ -152,7 +153,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="client-app\src\assets\" />
     <Folder Include="Scripts\" />
     <Folder Include="settings-app\src\assets\" />
   </ItemGroup>
@@ -162,7 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="client-app\src\App.vue" />
-    <Content Include="client-app\src\components\ClientPage.vue" />
+    <Content Include="client-app\src\components\ItemList.vue" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="client-app\jsconfig.json" />
@@ -177,6 +177,12 @@
     <Content Include="settings-app\README.md" />
     <Content Include="settings-app\src\App.vue" />
     <Content Include="settings-app\src\components\SettingsPage.vue" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\src\components\_template.vue" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\src\components\ItemEdit.vue" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

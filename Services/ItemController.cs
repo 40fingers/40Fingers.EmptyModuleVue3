@@ -9,6 +9,7 @@ using System.Threading;
 using DotNetNuke.UI.Modules;
 using DotNetNuke.Common.Utilities;
 using System.Collections.Generic;
+using DotNetNuke.Data;
 using FortyFingers.EmptyModuleVue3.Components.BaseClasses;
 using FortyFingers.EmptyModuleVue3.Data;
 using FortyFingers.EmptyModuleVue3.Services.ViewModels;
@@ -16,8 +17,9 @@ using Newtonsoft.Json.Linq;
 
 namespace FortyFingers.EmptyModuleVue3.Services
 {
-    [SupportedModules("40F EmptyModuleVue3")]
-    [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.View)]
+    //[SupportedModules("40F EmptyModuleVue3")]
+    //[DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Anonymous)]
+    [AllowAnonymous]
     public class ItemController : ApiControllerBase
     {
         public ItemController() { }
@@ -29,26 +31,38 @@ namespace FortyFingers.EmptyModuleVue3.Services
             return Request.CreateResponse(System.Net.HttpStatusCode.NoContent);
         }
 
-        public HttpResponseMessage Get(int itemId)
+        [AllowAnonymous]
+        [HttpGet]
+        [ActionName("GetItem")]
+        public HttpResponseMessage GetItem(int itemId)
         {
-            // TODO: Implement
+            ItemViewModel retval = null;
 
-            return Request.CreateResponse(new ItemViewModel());
+            using (var dctx = DataContext.Instance())
+            {
+                var rep = dctx.GetRepository<Item>();
+                var item = rep.GetById(itemId);
+                retval = new ItemViewModel(item);
+            }
+
+            return Request.CreateResponse(retval ?? new ItemViewModel());
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [ActionName("GetList")]
         public HttpResponseMessage GetList()
         {
             var retval = new List<ItemViewModel>();
             var items = new List<Item>();
 
-            if (Globals.IsEditMode())
+            using (var dctx = DataContext.Instance())
             {
-                // TODO: Implement
+                var rep = dctx.GetRepository<Item>();
+                items = rep.Get().ToList();
             }
-            else
-            {
-                // TODO: Implement
-            }
+
+            items.ForEach(i => retval.Add(new ItemViewModel(i)));
 
             return Request.CreateResponse(retval);
         }

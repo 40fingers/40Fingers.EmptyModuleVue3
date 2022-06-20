@@ -1,5 +1,5 @@
 <template>
-    <ClientPage />
+    <ItemList />
 </template>
 
 <script setup>
@@ -10,11 +10,11 @@
 </script>
 
 <script>
-    import ClientPage from './components/ClientPage.vue';
+    import ItemList from './components/ItemList.vue';
     export default {
         name: 'App',
         components: {
-            ClientPage
+            ItemList
         },
         // you can access the instance as the function's first argument
         // data: (inst) => { return { field: inst.someProp }; }
