@@ -30,15 +30,19 @@
 </template>
 
 <script setup>
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
     import { getItems } from "../assets/api";
     import ItemEdit from './ItemEdit.vue';
 
-    const { items, error } = getItems();
+    const items = ref(null);
     const editItemId = ref(null);
 
     // https://vuejs.org/api/composition-api-lifecycle.html
-    //onMounted(() => { })
+    onMounted(() => {
+        getItems((resp) => {
+            items.value = resp;
+        })
+    })
 
 </script>
 

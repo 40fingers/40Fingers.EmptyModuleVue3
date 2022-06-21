@@ -1,9 +1,9 @@
 <template>
     <div class="modal" tabindex="-1" id="itemEditModal">
         <div class="modal-dialog">
-            <div class="modal-content" v-if="itemdata.item">
+            <div class="modal-content" v-if="item">
                 <div class="modal-header">
-                    <h5 class="modal-title">{{itemdata.item.name}}</h5>
+                    <h5 class="modal-title">{{item.name}}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -11,15 +11,15 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="itemId">Item Id</label>
-                        <input type="text" class="form-control" id="itemId" v-model="itemdata.item.id" readonly>
+                        <input type="text" class="form-control" id="itemId" v-model="item.id" readonly>
                     </div>
                     <div class="form-group">
                         <label for="itemName">Name</label>
-                        <input type="text" class="form-control" id="itemName" v-model="itemdata.item.name">
+                        <input type="text" class="form-control" id="itemName" v-model="item.name">
                     </div>
                     <div class="form-group form-check">
                         <label for="itemDescription">Description</label>
-                        <textarea class="form-control" id="itemDescription" v-model="itemdata.item.description"></textarea>
+                        <textarea class="form-control" id="itemDescription" v-model="item.description"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -35,53 +35,36 @@
 </template>
 
 <script setup>
-    import { computed, defineProps } from 'vue';
-    //import { ref, onMounted } from 'vue';
-    import { baseUrls, useFetch } from "../assets/api";
+    import { defineProps, onMounted, ref, toRef, watch } from 'vue';
+    import { getItem } from "../assets/api";
 
+    // define the properties to be passed into this component
     const props = defineProps(["itemId"]);
-    const editItemId = computed(() => props.itemId);
 
-    const url = computed(() => `${baseUrls.getItem}${editItemId.value}`);
+    // create a ref for the props we need to watch
+    const editItemId = toRef(props, "itemId");
 
-    const itemdata = useFetch(url);
+    // create refs for reactive data items
+    const item = ref(null);
 
-    //const { itemId } = toRefs(props);
-    //const initialItem = getItem(props.itemId).item;
-    //const item = ref(initialItem);
-
-    //watch(itemId, (newItemId, prvItemId) => {
-    //    console.log(`change value for item to ${newItemId}`);
-    //    //const newItem = JSON.parse(JSON.stringify(item.value));
-    //    //newItem.id = newItemId;
-    //    const newItem = getItem(newItemId).item;
-    //    console.log(`new item: ${JSON.stringify(newItem.value)}`);
-    //    item.value = newItem.value;
-    //    console.log(`new item value: ${JSON.stringify(item.value)}`);
-    //});
-
-    //const item = computed(() => {
-    //    const newData = getItem(props.itemId).item;
-    //    console.log(`new value for item: ${JSON.stringify(newData)}`)
-    //    return newData;
-    //})
-
-    //const data = getDataFromApi();
-
+    // fetch initial data
     // https://vuejs.org/api/composition-api-lifecycle.html
-    //onMounted(() => {});
+    onMounted(() => {
+        refreshItem()
+    });
 
+    // add watch for the ref we just created
+    // this will get triggered when the ref.value changes
+    watch(editItemId, (newItemId, prvItemId) => {
+        refreshItem();
+    });
 
-    //const { itemId } = toRefs(props);
-
-    //const {item} = getItem(props.itemId);
-
-    //const item = ref(null);
-    //watch(itemId, (newItemId, prvItemId) => {
-    //    const newData = getItem(props.itemId);
-    //    console.log(`new value for item: ${JSON.stringify(newData.item)}`)
-    //    item.value = newData.item;
-    //});
+    // function to fetch data
+    function refreshItem() {
+        getItem(editItemId.value, (resp) => {
+            item.value = resp;
+        });
+    }
 
 </script>
 
