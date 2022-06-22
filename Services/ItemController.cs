@@ -23,13 +23,6 @@ namespace FortyFingers.EmptyModuleVue3.Services
     {
         public ItemController() { }
 
-        public HttpResponseMessage Delete(int itemId)
-        {
-            // TODO: Implement
-
-            return Request.CreateResponse(System.Net.HttpStatusCode.NoContent);
-        }
-
         [HttpGet]
         [ActionName("GetItem")]
         public HttpResponseMessage GetItem(int itemId)
@@ -68,6 +61,20 @@ namespace FortyFingers.EmptyModuleVue3.Services
             items.ForEach(i => retval.Add(new ItemViewModel(i)));
 
             return Request.CreateResponse(retval);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]
+        [ActionName("Delete")]
+        public HttpResponseMessage Delete(int itemId)
+        {
+            using (var dctx = DataContext.Instance())
+            {
+                var rep = dctx.GetRepository<Item>();
+                rep.Delete($"WHERE {nameof(Item.Id)} = @0", itemId);
+            }
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, new { });
         }
 
         [HttpPost]

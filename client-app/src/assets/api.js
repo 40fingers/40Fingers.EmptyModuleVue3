@@ -9,6 +9,10 @@ export function getItems(dnnConfig, onSuccess) {
     doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Item/GetList`, undefined, undefined, onSuccess);
 }
 
+export function deleteItem(dnnConfig, id, onSuccess) {
+    doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Item/Delete/${id}`, { method: "POST" }, undefined, onSuccess);
+}
+
 export function saveItem(dnnConfig, item, onSuccess) {
     doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Item/Save`, { method: "POST" }, item, onSuccess);
 }

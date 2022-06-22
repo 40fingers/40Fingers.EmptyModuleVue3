@@ -23,6 +23,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" v-if="itemOptions.editMode" @click="doDeleteItem()">Delete</button>
                     <button type="button" class="btn btn-primary" v-if="itemOptions.editMode" @click="doSaveItem()">Save</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
@@ -33,7 +34,7 @@
 
 <script setup>
     import { defineEmits, defineProps, inject, onMounted, ref, toRef, watch } from 'vue';
-    import { getItem, saveItem } from "../assets/api";
+    import { deleteItem, getItem, saveItem } from "../assets/api";
 
     // define the properties to be passed into this component
     const props = defineProps(["itemOptions"]);
@@ -74,7 +75,12 @@
     // save data
     function doSaveItem() {
         saveItem(dnnConfig, item.value, (resp) => {
-            console.log("saved");
+            hideModal();
+            emit("change");
+        });
+    }
+    function doDeleteItem() {
+        deleteItem(dnnConfig, item.value.id, (resp) => {
             hideModal();
             emit("change");
         });
