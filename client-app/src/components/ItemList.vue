@@ -32,20 +32,23 @@
 </template>
 
 <script setup>
-    import { onMounted, ref } from 'vue';
+    import { inject , onMounted, ref } from 'vue';
     import { getItems } from "../assets/api";
     import ItemDetail from './ItemDetail.vue';
 
     const items = ref(null);
     const itemOptions = ref(null);
+    const dnnConfig = inject("dnnConfig");
+
 
     // https://vuejs.org/api/composition-api-lifecycle.html
-    onMounted(() => {
+    onMounted(function() {
+        console.log(dnnConfig);
         loadData();
     })
 
     function loadData() {
-        getItems((resp) => {
+        getItems(dnnConfig, (resp) => {
             items.value = resp;
         });
     }

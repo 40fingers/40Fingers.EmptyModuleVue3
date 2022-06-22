@@ -17,9 +17,8 @@ using Newtonsoft.Json.Linq;
 
 namespace FortyFingers.EmptyModuleVue3.Services
 {
-    //[SupportedModules("40F EmptyModuleVue3")]
-    //[DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Anonymous)]
-    [AllowAnonymous]
+    [SupportedModules("40F EmptyModuleVue3")]
+    [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.View)]
     public class ItemController : ApiControllerBase
     {
         public ItemController() { }
@@ -31,7 +30,6 @@ namespace FortyFingers.EmptyModuleVue3.Services
             return Request.CreateResponse(System.Net.HttpStatusCode.NoContent);
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [ActionName("GetItem")]
         public HttpResponseMessage GetItem(int itemId)
@@ -54,7 +52,6 @@ namespace FortyFingers.EmptyModuleVue3.Services
             return Request.CreateResponse(retval ?? new ItemViewModel());
         }
 
-        [AllowAnonymous]
         [HttpGet]
         [ActionName("GetList")]
         public HttpResponseMessage GetList()
@@ -74,9 +71,8 @@ namespace FortyFingers.EmptyModuleVue3.Services
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        [AllowAnonymous]
-        //[HttpGet]
+        [ValidateAntiForgeryToken]
+        [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]
         [ActionName("Save")]
         public HttpResponseMessage Save(ItemViewModel item)
         {

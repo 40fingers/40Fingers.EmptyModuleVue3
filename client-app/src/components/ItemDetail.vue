@@ -32,12 +32,14 @@
 </template>
 
 <script setup>
-    import { defineEmits, defineProps, onMounted, ref, toRef, watch } from 'vue';
+    import { defineEmits, defineProps, inject, onMounted, ref, toRef, watch } from 'vue';
     import { getItem, saveItem } from "../assets/api";
 
     // define the properties to be passed into this component
     const props = defineProps(["itemOptions"]);
     const emit = defineEmits(["change", "delete"]);
+
+    const dnnConfig = inject("dnnConfig");
 
     // create a ref for the props we need to watch
     const itemOptions = toRef(props, "itemOptions");
@@ -64,14 +66,14 @@
 
     // function to fetch data
     function refreshItem() {
-        getItem(itemOptions.value.itemId, (resp) => {
+        getItem(dnnConfig, itemOptions.value.itemId, (resp) => {
             item.value = resp;
         });
     }
 
     // save data
     function doSaveItem() {
-        saveItem(item.value, (resp) => {
+        saveItem(dnnConfig, item.value, (resp) => {
             console.log("saved");
             hideModal();
             emit("change");
