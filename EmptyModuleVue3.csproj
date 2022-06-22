@@ -182,7 +182,7 @@
     <Content Include="client-app\src\components\_template.vue" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="client-app\src\components\ItemEdit.vue" />
+    <Content Include="client-app\src\components\ItemDetail.vue" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

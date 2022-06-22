@@ -12,8 +12,8 @@
             <tbody v-for="item in items" :key="item.id">
                 <tr class="d-flex">
                     <td class="col-3">
-                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="editItemId=item.id">View</button>
-                        <button type="button" class="btn btn-secondary">Edit</button>
+                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(item.id, false)">View</button>
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" :data-target="`#itemEditModal`"  @click="openItem(item.id, true)">Edit</button>
                     </td>
                     <td class="col-2">{{ item.id }}</td>
                     <td class="col-6">{{ item.name }}</td>
@@ -21,7 +21,7 @@
             </tbody>
         </table>
         <div id="itemEdit">
-            <ItemEdit v-if="editItemId" :itemId="editItemId" />
+            <ItemDetail v-if="itemOptions" :itemOptions="itemOptions" />
         </div>
         <div v-if="error">
             {{error}}
@@ -32,10 +32,10 @@
 <script setup>
     import { onMounted, ref } from 'vue';
     import { getItems } from "../assets/api";
-    import ItemEdit from './ItemEdit.vue';
+    import ItemDetail from './ItemDetail.vue';
 
     const items = ref(null);
-    const editItemId = ref(null);
+    const itemOptions = ref(null);
 
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(() => {
@@ -43,6 +43,10 @@
             items.value = resp;
         })
     })
+
+    function openItem(id, editMode) {
+        itemOptions.value = { itemId: id, editMode };
+    }
 
 </script>
 

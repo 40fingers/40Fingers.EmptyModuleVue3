@@ -11,20 +11,20 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="itemId">Item Id</label>
-                        <input type="text" class="form-control" id="itemId" v-model="item.id" readonly>
+                        <input type="text" class="form-control" id="itemId" v-model="item.id" :readonly="itemOptions.editMode === false">
                     </div>
                     <div class="form-group">
                         <label for="itemName">Name</label>
-                        <input type="text" class="form-control" id="itemName" v-model="item.name">
+                        <input type="text" class="form-control" id="itemName" v-model="item.name" :readonly="itemOptions.editMode === false">
                     </div>
                     <div class="form-group form-check">
                         <label for="itemDescription">Description</label>
-                        <textarea class="form-control" id="itemDescription" v-model="item.description"></textarea>
+                        <textarea class="form-control" id="itemDescription" v-model="item.description" :readonly="itemOptions.editMode === false"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" v-if="itemOptions.editMode">Save</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save</button>
                 </div>
             </div>
         </div>
@@ -39,10 +39,10 @@
     import { getItem } from "../assets/api";
 
     // define the properties to be passed into this component
-    const props = defineProps(["itemId"]);
+    const props = defineProps(["itemOptions"]);
 
     // create a ref for the props we need to watch
-    const editItemId = toRef(props, "itemId");
+    const itemOptions = toRef(props, "itemOptions");
 
     // create refs for reactive data items
     const item = ref(null);
@@ -55,13 +55,13 @@
 
     // add watch for the ref we just created
     // this will get triggered when the ref.value changes
-    watch(editItemId, (newItemId, prvItemId) => {
+    watch(itemOptions, (newOptions, prvOptions) => {
         refreshItem();
     });
 
     // function to fetch data
     function refreshItem() {
-        getItem(editItemId.value, (resp) => {
+        getItem(itemOptions.value.itemId, (resp) => {
             item.value = resp;
         });
     }
@@ -70,7 +70,7 @@
 
 <script>
     export default {
-        name: 'ItemEdit',
+        name: 'ItemDetail',
     }
 </script>
 
