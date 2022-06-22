@@ -4,9 +4,11 @@
         <table class="table table-hover">
             <thead>
                 <tr class="d-flex">
-                    <th class="col-3"></th>
+                    <th class="col-3">
+                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(0, true)">New</button>
+                    </th>
                     <th class="col-2">Id</th>
-                    <th class="col-6">Name</th>
+                    <th class="col-7">Name</th>
                 </tr>
             </thead>
             <tbody v-for="item in items" :key="item.id">
@@ -16,7 +18,7 @@
                         <button type="button" class="btn btn-secondary" data-toggle="modal" :data-target="`#itemEditModal`"  @click="openItem(item.id, true)">Edit</button>
                     </td>
                     <td class="col-2">{{ item.id }}</td>
-                    <td class="col-6">{{ item.name }}</td>
+                    <td class="col-7">{{ item.name }}</td>
                 </tr>
             </tbody>
         </table>

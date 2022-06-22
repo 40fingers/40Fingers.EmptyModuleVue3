@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="itemId">Item Id</label>
-                        <input type="text" class="form-control" id="itemId" v-model="item.id" :readonly="itemOptions.editMode === false">
+                        <input type="text" class="form-control" id="itemId" v-model="item.id" readonly>
                     </div>
                     <div class="form-group">
                         <label for="itemName">Name</label>

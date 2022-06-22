@@ -38,13 +38,19 @@ namespace FortyFingers.EmptyModuleVue3.Services
         {
             ItemViewModel retval = null;
 
-            using (var dctx = DataContext.Instance())
+            if (itemId > 0)
             {
-                var rep = dctx.GetRepository<Item>();
-                var item = rep.GetById(itemId);
-                retval = new ItemViewModel(item);
+                using (var dctx = DataContext.Instance())
+                {
+                    var rep = dctx.GetRepository<Item>();
+                    var item = rep.GetById(itemId);
+                    retval = new ItemViewModel(item);
+                }
             }
-
+            else
+            {
+                retval = new ItemViewModel();
+            }
             return Request.CreateResponse(retval ?? new ItemViewModel());
         }
 
@@ -79,7 +85,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
                 var rep = dctx.GetRepository<Item>();
                 var saveItem = item.Id > 0 ? rep.GetById(item.Id) : new Item()
                 {
-                    ModuleId = this.ActiveModule.ModuleID,
+                    ModuleId = this.ActiveModule?.ModuleID ?? 1354,
                     AssignedUserId = UserInfo.UserID,
                     CreatedByUserId = UserInfo.UserID,
                     CreatedOnDate = DateTime.Now
@@ -98,7 +104,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
                     rep.Insert(saveItem);
                 }
             }
-            return Request.CreateResponse(System.Net.HttpStatusCode.OK, new {});
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, new { });
         }
 
         private Item Create(ItemViewModel item)
