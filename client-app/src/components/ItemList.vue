@@ -21,10 +21,10 @@
             </tbody>
         </table>
         <div id="itemEdit">
-            <ItemDetail v-if="itemOptions" :itemOptions="itemOptions" />
-        </div>
-        <div v-if="error">
-            {{error}}
+            <ItemDetail 
+                v-if="itemOptions" 
+                v-on:change="loadData()"
+                :itemOptions="itemOptions" />
         </div>
     </div>
 </template>
@@ -39,10 +39,14 @@
 
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(() => {
+        loadData();
+    })
+
+    function loadData() {
         getItems((resp) => {
             items.value = resp;
-        })
-    })
+        });
+    }
 
     function openItem(id, editMode) {
         itemOptions.value = { itemId: id, editMode };

@@ -23,23 +23,21 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" v-if="itemOptions.editMode">Save</button>
+                    <button type="button" class="btn btn-primary" v-if="itemOptions.editMode" @click="doSaveItem()">Save</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
     </div>
-    <div v-if="error">
-        {{itemdata.error}}
-    </div>
 </template>
 
 <script setup>
-    import { defineProps, onMounted, ref, toRef, watch } from 'vue';
-    import { getItem } from "../assets/api";
+    import { defineEmits, defineProps, onMounted, ref, toRef, watch } from 'vue';
+    import { getItem, saveItem } from "../assets/api";
 
     // define the properties to be passed into this component
     const props = defineProps(["itemOptions"]);
+    const emit = defineEmits(["change", "delete"]);
 
     // create a ref for the props we need to watch
     const itemOptions = toRef(props, "itemOptions");
@@ -47,9 +45,14 @@
     // create refs for reactive data items
     const item = ref(null);
 
+    let hideModal;
+
     // fetch initial data
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(() => {
+        hideModal = function () {
+            window.$("#itemEditModal").modal('hide');
+        }
         refreshItem()
     });
 
@@ -66,6 +69,14 @@
         });
     }
 
+    // save data
+    function doSaveItem() {
+        saveItem(item.value, (resp) => {
+            console.log("saved");
+            hideModal();
+            emit("change");
+        });
+    }
 </script>
 
 <script>

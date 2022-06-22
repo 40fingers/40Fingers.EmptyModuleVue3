@@ -68,20 +68,37 @@ namespace FortyFingers.EmptyModuleVue3.Services
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        //[HttpGet]
+        [ActionName("Save")]
         public HttpResponseMessage Save(ItemViewModel item)
         {
-            if (item.Id > 0)
+            using (var dctx = DataContext.Instance())
             {
-                // TODO: Implement
-                return Request.CreateResponse(System.Net.HttpStatusCode.NoContent);
-            }
-            else
-            {
-                // TODO: Implement
-                return Request.CreateResponse(item.Id);
-            }
+                var rep = dctx.GetRepository<Item>();
+                var saveItem = item.Id > 0 ? rep.GetById(item.Id) : new Item()
+                {
+                    ModuleId = this.ActiveModule.ModuleID,
+                    AssignedUserId = UserInfo.UserID,
+                    CreatedByUserId = UserInfo.UserID,
+                    CreatedOnDate = DateTime.Now
+                };
+                saveItem.ItemName = item.Name;
+                saveItem.ItemDescription = item.Description;
+                saveItem.LastModifiedByUserId = UserInfo.UserID;
+                saveItem.LastModifiedOnDate = DateTime.Now;
 
+                if (saveItem.Id > 0)
+                {
+                    rep.Update(saveItem);
+                }
+                else
+                {
+                    rep.Insert(saveItem);
+                }
+            }
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, new {});
         }
 
         private Item Create(ItemViewModel item)
