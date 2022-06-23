@@ -1,21 +1,21 @@
 <template>
     <div>
-        <h1>Client</h1>
+        <h1>{{resx.ModuleName}}</h1>
         <table class="table table-hover">
             <thead>
                 <tr class="d-flex">
                     <th class="col-3">
-                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(0, true)">New</button>
+                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(0, true)">{{resx.Add}}</button>
                     </th>
-                    <th class="col-2">Id</th>
-                    <th class="col-7">Name</th>
+                    <th class="col-2">{{resx.ItemIdLabel}}</th>
+                    <th class="col-7">{{resx.ItemNameLabel}}</th>
                 </tr>
             </thead>
             <tbody v-for="item in items" :key="item.id">
                 <tr class="d-flex">
                     <td class="col-3">
-                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(item.id, false)">View</button>
-                        <button type="button" class="btn btn-secondary" data-toggle="modal" :data-target="`#itemEditModal`"  @click="openItem(item.id, true)">Edit</button>
+                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(item.id, false)">{{resx.View}}</button>
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" :data-target="`#itemEditModal`"  @click="openItem(item.id, true)">{{resx.Edit}}</button>
                     </td>
                     <td class="col-2">{{ item.id }}</td>
                     <td class="col-7">{{ item.name }}</td>
@@ -38,7 +38,10 @@
 
     const items = ref(null);
     const itemOptions = ref(null);
+
     const dnnConfig = inject("dnnConfig");
+    console.log("injecting resx");
+    const resx = inject("resx");
 
 
     // https://vuejs.org/api/composition-api-lifecycle.html

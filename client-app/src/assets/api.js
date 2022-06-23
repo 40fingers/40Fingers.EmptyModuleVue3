@@ -1,7 +1,4 @@
-﻿//import { ref, isRef, unref, watchEffect } from 'vue'
-
-
-export function getItem(dnnConfig, id, onSuccess) {
+﻿export function getItem(dnnConfig, id, onSuccess) {
     doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Item/GetItem?itemid=${id}`, undefined, undefined, onSuccess);
 }
 
@@ -15,6 +12,10 @@ export function deleteItem(dnnConfig, id, onSuccess) {
 
 export function saveItem(dnnConfig, item, onSuccess) {
     doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Item/Save`, { method: "POST" }, item, onSuccess);
+}
+
+export function getResx(dnnConfig, filename, onSuccess) {
+    doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Resx/GetResx?filename=${filename}`, undefined, undefined, onSuccess);
 }
 
 function doFetch(dnnConfig, url, setOptions, data, onSuccess) {
@@ -40,6 +41,8 @@ function doFetch(dnnConfig, url, setOptions, data, onSuccess) {
         .then((response) => {
             if (response.status === 200) {
                 return response.json();
+            } else {
+                return null;
             }
         })
         .then((json) => {

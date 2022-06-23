@@ -10,22 +10,22 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="itemId">Item Id</label>
+                        <label for="itemId">{{resx.ItemIdLabel}}</label>
                         <input type="text" class="form-control" id="itemId" v-model="item.id" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="itemName">Name</label>
+                        <label for="itemName">{{resx.ItemNameLabel}}</label>
                         <input type="text" class="form-control" id="itemName" v-model="item.name" :readonly="itemOptions.editMode === false">
                     </div>
                     <div class="form-group form-check">
-                        <label for="itemDescription">Description</label>
+                        <label for="itemDescription">{{resx.ItemDescriptionLabel}}</label>
                         <textarea class="form-control" id="itemDescription" v-model="item.description" :readonly="itemOptions.editMode === false"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" v-if="itemOptions.editMode" @click="doDeleteItem()">Delete</button>
-                    <button type="button" class="btn btn-primary" v-if="itemOptions.editMode" @click="doSaveItem()">Save</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" v-if="itemOptions.editMode" @click="doDeleteItem()">{{resx.Delete}}</button>
+                    <button type="button" class="btn btn-primary" v-if="itemOptions.editMode" @click="doSaveItem()">{{resx.Save}}</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">{{resx.Close}}</button>
                 </div>
             </div>
         </div>
@@ -41,6 +41,7 @@
     const emit = defineEmits(["change", "delete"]);
 
     const dnnConfig = inject("dnnConfig");
+    const resx = inject("resx");
 
     // create a ref for the props we need to watch
     const itemOptions = toRef(props, "itemOptions");
