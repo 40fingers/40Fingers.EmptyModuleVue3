@@ -10,6 +10,7 @@ using DotNetNuke.UI.Modules;
 using DotNetNuke.Common.Utilities;
 using System.Collections.Generic;
 using DotNetNuke.Data;
+using DotNetNuke.Security.Permissions;
 using FortyFingers.EmptyModuleVue3.Components.BaseClasses;
 using FortyFingers.EmptyModuleVue3.Data;
 using FortyFingers.EmptyModuleVue3.Services.ViewModels;
@@ -49,7 +50,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
         [ActionName("GetList")]
         public HttpResponseMessage GetList()
         {
-            var retval = new List<ItemViewModel>();
+            var retval = new ItemsViewModel();
             var items = new List<Item>();
 
             using (var dctx = DataContext.Instance())
@@ -58,7 +59,9 @@ namespace FortyFingers.EmptyModuleVue3.Services
                 items = rep.Get().ToList();
             }
 
-            items.ForEach(i => retval.Add(new ItemViewModel(i)));
+            retval.CanEdit = ModulePermissionController.HasModulePermission(ActiveModule.ModulePermissions, "EDIT");
+
+            items.ForEach(i => retval.Items.Add(new ItemViewModel(i)));
 
             return Request.CreateResponse(retval);
         }

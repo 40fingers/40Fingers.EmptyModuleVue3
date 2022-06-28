@@ -5,7 +5,7 @@
             <thead>
                 <tr class="d-flex">
                     <th class="col-3">
-                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(0, true)">{{resx.Add}}</button>
+                        <button type="button" class="btn btn-secondary mr-1" :id="`lstAddButton-${dnnConfig.moduleId}`" @click="openItem(0, true)" v-if="canEdit">{{resx.Add}}</button>
                     </th>
                     <th class="col-2">{{resx.ItemIdLabel}}</th>
                     <th class="col-7">{{resx.ItemNameLabel}}</th>
@@ -14,8 +14,8 @@
             <tbody v-for="item in items" :key="item.id">
                 <tr class="d-flex">
                     <td class="col-3">
-                        <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(item.id, false)">{{resx.View}}</button>
-                        <button type="button" class="btn btn-secondary" data-toggle="modal" :data-target="`#itemEditModal`"  @click="openItem(item.id, true)">{{resx.Edit}}</button>
+                        <button type="button" class="btn btn-secondary mr-1" @click="openItem(item.id, false)">{{resx.View}}</button>
+                        <button type="button" class="btn btn-secondary"  @click="openItem(item.id, true)" v-if="canEdit">{{resx.Edit}}</button>
                     </td>
                     <td class="col-2">{{ item.id }}</td>
                     <td class="col-7">{{ item.name }}</td>
@@ -38,6 +38,7 @@
 
     const items = ref(null);
     const itemOptions = ref(null);
+    const canEdit = ref(false);
 
     const dnnConfig = inject("dnnConfig");
     console.log("injecting resx");
@@ -52,7 +53,8 @@
 
     function loadData() {
         getItems(dnnConfig, (resp) => {
-            items.value = resp;
+            canEdit.value = resp.canEdit;
+            items.value = resp.items;
         });
     }
 

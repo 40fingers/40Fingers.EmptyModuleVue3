@@ -26,7 +26,7 @@
             ItemDatatable, ItemList
         },
         data: function() {
-            return { showList: false, showDatatable: true };
+            return { showList: true, showDatatable: true };
         }
         // you can access the instance as the function's first argument
         // data: (inst) => { return { field: inst.someProp }; }

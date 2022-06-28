@@ -10,7 +10,7 @@
                         <th>Description</th>
                         <th>User</th>
                         <th class="text-right">
-                            <button type="button" class="btn btn-secondary mr-1" @click="openItem(0, true)">{{resx.Add}}</button>
+                            <button type="button" class="btn btn-secondary mr-1 d-none" @click="openItem(0, true)" :id="`dtAddButton-${dnnConfig.moduleId}`">{{resx.Add}}</button>
                         </th>
                     </tr>
                 </thead>
@@ -26,12 +26,24 @@
 </template>
 
 <script setup>
-    import { inject , onMounted, ref } from 'vue';
+    import { inject , onMounted, ref, watch } from 'vue';
     import { getItems } from "../assets/api";
     import ItemDetail from './ItemDetail.vue';
 
     const items = ref(null);
     const itemOptions = ref(null);
+    const canEdit = ref(false); // `dtAddButton-${dnnConfig.moduleId}`
+
+    // add watch for canEdit
+    // this will get triggered when the canEdit.value changes
+    // needed to show/hide the button manually, since it is inside of datatables and not managed by Vue
+    watch(canEdit, (newValue, prvValue) => {
+        if (newValue) {
+            $(`#dtAddButton-${dnnConfig.moduleId}`).removeClass("d-none");
+        } else {
+            $(`#dtAddButton-${dnnConfig.moduleId}`).removeClass("d-none");
+        }
+    });
 
     let dtId;
     let dtSel;
@@ -60,7 +72,9 @@
 
     function loadData() {
         getItems(dnnConfig, (resp) => {
-            items.value = resp;
+            items.value = resp.items; // give the items to the vue app too, in case we need them for something outside of datatables
+            canEdit.value = resp.canEdit;
+
             if ($.fn.DataTable.isDataTable(dtSel)) {
                 let dt = $(dtSel).DataTable();
                 dt.clear();
@@ -68,7 +82,7 @@
                 dt.draw();
             } else {
                 $(`#dt-${dnnConfig.moduleId}`).DataTable({
-                    "data": resp,
+                    "data": resp.items,
                     "columns": [
                         { "data": "id" },
                         { "data": "name" },
@@ -82,8 +96,11 @@
                             targets: [4],
                             className: "text-right",
                             render: function (data, type, row, meta) {
-                                return `<button type="button" class="btn btn-secondary mr-1" data-method="openItem" data-edit="false" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.View}</button>`
-                                    + `<button type="button" class="btn btn-secondary" data-method="openItem" data-edit="true" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.Edit}</button>`;
+                                let retval = `<button type="button" class="btn btn-secondary mr-1" data-method="openItem" data-edit="false" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.View}</button>`;
+                                if (canEdit.value) {
+                                    retval += `<button type="button" class="btn btn-secondary" data-method="openItem" data-edit="true" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.Edit}</button>`;
+                                }
+                                return retval;
                             }
                         }
                     ],
