@@ -1,5 +1,5 @@
 <template>
-    <div class="modal" tabindex="-1" id="itemEditModal">
+    <div class="modal" tabindex="-1" :id="`itemEditModal-${dnnConfig.moduleId}`">
         <div class="modal-dialog">
             <div class="modal-content" v-if="item">
                 <div class="modal-header">
@@ -57,10 +57,10 @@
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(() => {
         hideModal = function () {
-            $("#itemEditModal").modal('hide');
+            $(`#itemEditModal-${dnnConfig.moduleId}`).modal('hide');
         }
         showModal = function () {
-            $("#itemEditModal").modal('show');
+            $(`#itemEditModal-${dnnConfig.moduleId}`).modal('show');
         }
         refreshItem()
     });

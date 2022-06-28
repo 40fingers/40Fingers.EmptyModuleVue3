@@ -47,7 +47,7 @@
         dtId = `dt-${dnnConfig.moduleId}`;
         dtSel = `#${dtId}`;
 
-        // we add our openItem function to it, and keep the index (which is index minus 1)
+        // we add our openItem functions to it, and keep the index (which is index minus 1)
         openItemCallbackIndex = window.dtCallBacks.push(openItem) - 1;
 
         loadData();
@@ -82,7 +82,8 @@
                             targets: [4],
                             className: "text-right",
                             render: function (data, type, row, meta) {
-                                return `<button type="button" class="btn btn-secondary" data-method="openItem" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.Edit}</button>`;
+                                return `<button type="button" class="btn btn-secondary mr-1" data-method="openItem" data-edit="false" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.View}</button>`
+                                    + `<button type="button" class="btn btn-secondary" data-method="openItem" data-edit="true" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.Edit}</button>`;
                             }
                         }
                     ],
@@ -90,12 +91,13 @@
                         console.log("before draw");
                         $(`${dtSel} button[data-method="openItem"]`).on("click", function () {
                             const id = $(this).attr("data-id");
+                            const edit = $(this).attr("data-edit") == "true";
                             const ix = Number($(this).attr("data-cbckix"));
                             console.log(`calling openItem(${id}, true) on window.dtCallbacks[${ix}] (it has ${window.dtCallBacks?.length})`);
                             // here we're calling into the Vue component from the outside, so we're doing that through the array we manage above
                             const fn = window.dtCallBacks[ix];
                             console.log(`fn = ${typeof(fn)}`);
-                            fn(id, true);
+                            fn(id, edit);
                         });
                     }
                 });

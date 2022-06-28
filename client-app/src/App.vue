@@ -1,6 +1,16 @@
 <template>
-    <ItemList v-if="false" />
-    <ItemDatatable />
+    <div class="text-left d-none">
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="showList" v-bind="showList">
+            <label class="custom-control-label" for="showList">Show List</label>
+        </div>
+        <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" id="switchDatatable" v-bind="showDatatable">
+            <label class="custom-control-label" for="switchDatatable">Show Datatable</label>
+        </div>
+    </div>
+    <ItemList v-if="showList" />
+    <ItemDatatable v-if="showDatatable"/>
 </template>
 
 <script setup>
@@ -9,11 +19,15 @@
 <script>
     import ItemList from './components/ItemList.vue';
     import ItemDatatable from './components/ItemDatatable.vue';
+
     export default {
         name: 'App',
         components: {
             ItemDatatable, ItemList
         },
+        data: function() {
+            return { showList: false, showDatatable: true };
+        }
         // you can access the instance as the function's first argument
         // data: (inst) => { return { field: inst.someProp }; }
         // or use
