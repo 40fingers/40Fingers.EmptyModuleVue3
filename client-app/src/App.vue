@@ -1,5 +1,6 @@
 <template>
-    <ItemList />
+    <ItemList v-if="false" />
+    <ItemDatatable />
 </template>
 
 <script setup>
@@ -7,10 +8,11 @@
 
 <script>
     import ItemList from './components/ItemList.vue';
+    import ItemDatatable from './components/ItemDatatable.vue';
     export default {
         name: 'App',
         components: {
-            ItemList
+            ItemDatatable, ItemList
         },
         // you can access the instance as the function's first argument
         // data: (inst) => { return { field: inst.someProp }; }

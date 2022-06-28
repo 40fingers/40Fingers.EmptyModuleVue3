@@ -3,6 +3,7 @@ import App from './App.vue'
 import { getResx } from "./assets/api";
 
 const allAppElements = document.getElementsByClassName("appEmptyModuleVue3");
+
 window.onload = function () {
     for (var i = 0; i < allAppElements.length; i++) {
         const app = createApp(App);
