@@ -42,6 +42,7 @@
 
     const dnnConfig = inject("dnnConfig");
     const resx = inject("resx");
+    const $ = inject("jQuery");
 
     // create a ref for the props we need to watch
     const itemOptions = toRef(props, "itemOptions");
@@ -50,12 +51,16 @@
     const item = ref(null);
 
     let hideModal;
+    let showModal;
 
     // fetch initial data
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(() => {
         hideModal = function () {
-            window.$("#itemEditModal").modal('hide');
+            $("#itemEditModal").modal('hide');
+        }
+        showModal = function () {
+            $("#itemEditModal").modal('show');
         }
         refreshItem()
     });
@@ -70,6 +75,7 @@
     function refreshItem() {
         getItem(dnnConfig, itemOptions.value.itemId, (resp) => {
             item.value = resp;
+            showModal();
         });
     }
 

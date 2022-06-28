@@ -9,8 +9,8 @@
                         <th>{{resx.ItemNameLabel}}</th>
                         <th>Description</th>
                         <th>User</th>
-                        <th>
-                            <button type="button" class="btn btn-secondary mr-1" data-toggle="modal" :data-target="`#itemEditModal`" @click="openItem(0, true)">{{resx.Add}}</button>
+                        <th class="text-right">
+                            <button type="button" class="btn btn-secondary mr-1" @click="openItem(0, true)">{{resx.Add}}</button>
                         </th>
                     </tr>
                 </thead>
@@ -18,6 +18,7 @@
         </div>
         <div id="itemEdit">
             <ItemDetail v-if="itemOptions"
+                        :key="itemOptions.itemId"
                         v-on:change="loadData()"
                         :itemOptions="itemOptions" />
         </div>
@@ -29,22 +30,33 @@
     import { getItems } from "../assets/api";
     import ItemDetail from './ItemDetail.vue';
 
-    const $ = window.$;
     const items = ref(null);
     const itemOptions = ref(null);
 
     let dtId;
     let dtSel;
+    let openItemCallbackIndex;
 
     const dnnConfig = inject("dnnConfig");
     const resx = inject("resx");
+    const window = inject("window");
+    const $ = inject("jQuery");
 
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(function() {
         dtId = `dt-${dnnConfig.moduleId}`;
         dtSel = `#${dtId}`;
+
+        // we add our openItem function to it, and keep the index (which is index minus 1)
+        openItemCallbackIndex = window.dtCallBacks.push(openItem) - 1;
+
         loadData();
     })
+
+    function openItem(id, editMode) {
+        console.log(`called openItem(${id}, ${editMode})`);
+        itemOptions.value = { itemId: id, editMode };
+    }
 
     function loadData() {
         getItems(dnnConfig, (resp) => {
@@ -62,15 +74,33 @@
                         { "data": "name" },
                         { "data": "description" },
                         { "data": "assignedUser" },
-                        { "data": "editUrl" },
-                    ]
+                    ],
+                    columnDefs: [
+                        { targets: [0, 1, 2], className: "text-left" },
+                        { targets: [3], visible: false },
+                        { 
+                            targets: [4],
+                            className: "text-right",
+                            render: function (data, type, row, meta) {
+                                return `<button type="button" class="btn btn-secondary" data-method="openItem" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.Edit}</button>`;
+                            }
+                        }
+                    ],
+                    drawCallback: function (settings) {
+                        console.log("before draw");
+                        $(`${dtSel} button[data-method="openItem"]`).on("click", function () {
+                            const id = $(this).attr("data-id");
+                            const ix = Number($(this).attr("data-cbckix"));
+                            console.log(`calling openItem(${id}, true) on window.dtCallbacks[${ix}] (it has ${window.dtCallBacks?.length})`);
+                            // here we're calling into the Vue component from the outside, so we're doing that through the array we manage above
+                            const fn = window.dtCallBacks[ix];
+                            console.log(`fn = ${typeof(fn)}`);
+                            fn(id, true);
+                        });
+                    }
                 });
             }
         });
-    }
-
-    function openItem(id, editMode) {
-        itemOptions.value = { itemId: id, editMode };
     }
 
 </script>

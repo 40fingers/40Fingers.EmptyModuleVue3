@@ -19,13 +19,21 @@ window.onload = function () {
             rvt: window.$("input[name='__RequestVerificationToken']").val()
         };
 
+        // we need to be able register callbackMethods for dataTables on window level, 
+        // so we can call it from an event that Vue knows nothing about
+        // here we make sure the array exists, so we can use it from a component
+        if (window.dtCallBacks === undefined) {
+            window.dtCallBacks = [];
+        }
+
         getResx(dnnConfig,
             "View",
             (resx) => {
                 // https://vuejs.org/api/application.html#app-config-globalproperties
                 app.provide("dnnConfig", dnnConfig);
                 app.provide("resx", resx);
-
+                app.provide("window", window);
+                app.provide("jQuery", window.$);
                 app.mount(`#${thisAppElm.id}`);
 
             });
