@@ -9,6 +9,7 @@ using System.Threading;
 using DotNetNuke.UI.Modules;
 using DotNetNuke.Common.Utilities;
 using System.Collections.Generic;
+using System.Net;
 using DotNetNuke.Data;
 using DotNetNuke.Security.Permissions;
 using FortyFingers.EmptyModuleVue3.Components.BaseClasses;
@@ -111,6 +112,16 @@ namespace FortyFingers.EmptyModuleVue3.Services
                 }
             }
             return Request.CreateResponse(System.Net.HttpStatusCode.OK, new { });
+        }
+
+        [HttpPost]
+        [HttpGet]
+        [AllowAnonymous]
+        public HttpResponseMessage DtProcessing()
+        {
+            var req = Request.RequestUri.Query;
+
+            return new HttpResponseMessage(HttpStatusCode.OK);
         }
 
         private Item Create(ItemViewModel item)

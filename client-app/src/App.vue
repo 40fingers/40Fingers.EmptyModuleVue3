@@ -10,7 +10,7 @@
         </div>
     </div>
     <ItemList v-if="showList" />
-    <ItemDatatable v-if="showDatatable"/>
+    <ItemDatatable v-if="showDatatable" :serverSide="true"/>
 </template>
 
 <script setup>
@@ -26,7 +26,7 @@
             ItemDatatable, ItemList
         },
         data: function() {
-            return { showList: true, showDatatable: true };
+            return { showList: false, showDatatable: true };
         }
         // you can access the instance as the function's first argument
         // data: (inst) => { return { field: inst.someProp }; }
