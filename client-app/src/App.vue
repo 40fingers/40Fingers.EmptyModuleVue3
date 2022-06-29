@@ -9,30 +9,16 @@
             <label class="custom-control-label" for="switchDatatable">Show Datatable</label>
         </div>
     </div>
-    <ItemList v-if="showList" />
-    <ItemDatatable v-if="showDatatable" :serverSide="true"/>
+    <ItemList v-if="moduleConfig.showList" />
+    <ItemDatatable v-if="moduleConfig.showDatatable" :serverSide="true"/>
 </template>
 
 <script setup>
-</script>
-
-<script>
+    import { inject } from 'vue';
     import ItemList from './components/ItemList.vue';
     import ItemDatatable from './components/ItemDatatable.vue';
 
-    export default {
-        name: 'App',
-        components: {
-            ItemDatatable, ItemList
-        },
-        data: function() {
-            return { showList: false, showDatatable: true };
-        }
-        // you can access the instance as the function's first argument
-        // data: (inst) => { return { field: inst.someProp }; }
-        // or use
-        // data: () => { return { bla: 0, blo: true } }
-    }
+    const moduleConfig = inject("moduleConfig");
 </script>
 
 <style>

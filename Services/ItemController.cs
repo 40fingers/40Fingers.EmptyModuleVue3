@@ -29,7 +29,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
 
         [HttpGet]
         [ActionName("GetConfig")]
-        public HttpResponseMessage GetConfig(int itemId)
+        public HttpResponseMessage GetConfig()
         {
             var retval = new ModuleConfigModel()
             {
@@ -165,7 +165,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
                     var searchValue = PortalSecurity.Instance.InputFilter(model.search.value, PortalSecurity.FilterFlag.NoSQL);
 
                     whereClause +=
-                        $" AND ({nameof(Item.ItemName)} LIKE '%{string.IsNullOrWhiteSpace(searchValue)}%' OR {nameof(Item.ItemDescription)} LIKE ItemName LIKE '%{string.IsNullOrWhiteSpace(searchValue)}%')";
+                        $" AND ({nameof(Item.ItemName)} LIKE '%{searchValue}%' OR {nameof(Item.ItemDescription)} LIKE '%{searchValue}%')";
                 }
                 // get the filtered number of records
                 filteredResultsCount = dctx.ExecuteScalar<int>(CommandType.Text, $"SELECT COUNT(*) FROM {Common.GetTableName<Item>()} WHERE {whereClause}", ActiveModule.ModuleID);

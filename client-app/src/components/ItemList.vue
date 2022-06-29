@@ -40,6 +40,7 @@
     const itemOptions = ref(null);
     const canEdit = ref(false);
 
+    const moduleConfig = inject("moduleConfig");
     const dnnConfig = inject("dnnConfig");
     console.log("injecting resx");
     const resx = inject("resx");
@@ -47,13 +48,12 @@
 
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(function() {
-        console.log(dnnConfig);
+        canEdit.value = moduleConfig.canEdit;
         loadData();
     })
 
     function loadData() {
         getItems(dnnConfig, (resp) => {
-            canEdit.value = resp.canEdit;
             items.value = resp.items;
         });
     }

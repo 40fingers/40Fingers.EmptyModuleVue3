@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { getResx } from "./assets/api";
+import { getConfig, getResx } from "./assets/api";
 
 const allAppElements = document.getElementsByClassName("appEmptyModuleVue3");
 
@@ -26,17 +26,24 @@ window.onload = function () {
             window.dtCallBacks = [];
         }
 
-        getResx(dnnConfig,
-            "View",
-            (resx) => {
-                // https://vuejs.org/api/application.html#app-config-globalproperties
-                app.provide("dnnConfig", dnnConfig);
-                app.provide("resx", resx);
-                app.provide("window", window);
-                app.provide("jQuery", window.$);
-                app.mount(`#${thisAppElm.id}`);
+        // TODO: This would be much nicer using promises
+        getConfig(dnnConfig,
+            function(resp) {
+                app.provide("moduleConfig", resp);
 
-            });
+                getResx(dnnConfig,
+                    "View",
+                    (resx) => {
+                        app.provide("dnnConfig", dnnConfig);
+                        app.provide("resx", resx);
+                        app.provide("window", window);
+                        app.provide("jQuery", window.$);
+                        app.mount(`#${thisAppElm.id}`);
+                    }
+                );
+            }
+        );
+
     }
 };
 

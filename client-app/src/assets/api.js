@@ -1,4 +1,9 @@
 ﻿export
+    function getConfig(dnnConfig, onSuccess) {
+    doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Item/GetConfig`, undefined, undefined, onSuccess);
+}
+
+export
     function getItem(dnnConfig, id, onSuccess) {
     doFetch(dnnConfig, `${dnnConfig.apiBaseUrl}/Item/GetItem?itemid=${id}`, undefined, undefined, onSuccess);
 }

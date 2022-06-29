@@ -33,16 +33,23 @@
     const props = defineProps(["serverSide"]);
     const items = ref(null);
     const itemOptions = ref(null);
-    const canEdit = ref(false); // `dtAddButton-${dnnConfig.moduleId}`
+
+    const moduleConfig = inject("moduleConfig");
+    const dnnConfig = inject("dnnConfig");
+    const resx = inject("resx");
+    const window = inject("window");
+    const $ = inject("jQuery");
 
     // add watch for canEdit
     // this will get triggered when the canEdit.value changes
     // needed to show/hide the button manually, since it is inside of datatables and not managed by Vue
-    watch(canEdit, (newValue, prvValue) => {
-        if (newValue) {
+    watch(moduleConfig, (newValue, prvValue) => {
+        if (newValue.canEdit === prvValue.canEdit) return;
+
+        if (newValue.canEdit) {
             $(`#dtAddButton-${dnnConfig.moduleId}`).removeClass("d-none");
         } else {
-            $(`#dtAddButton-${dnnConfig.moduleId}`).removeClass("d-none");
+            $(`#dtAddButton-${dnnConfig.moduleId}`).addClass("d-none");
         }
     });
 
@@ -50,26 +57,32 @@
     let dtSel;
     let openItemCallbackIndex;
 
-    const dnnConfig = inject("dnnConfig");
-    const resx = inject("resx");
-    const window = inject("window");
-    const $ = inject("jQuery");
-
     // https://vuejs.org/api/composition-api-lifecycle.html
     onMounted(function () {
         dtId = `dt-${dnnConfig.moduleId}`;
         dtSel = `#${dtId}`;
+
+        processModuleConfig();
 
         // we add our openItem functions to it, and keep the index (which is index minus 1)
         openItemCallbackIndex = window.dtCallBacks.push(openItem) - 1;
         loadData();
     })
 
+    function processModuleConfig() {
+        if (moduleConfig.canEdit) {
+            $(`#dtAddButton-${dnnConfig.moduleId}`).removeClass("d-none");
+        } else {
+            $(`#dtAddButton-${dnnConfig.moduleId}`).addClass("d-none");
+        }
+    }
+
     function openItem(id, editMode) {
         itemOptions.value = { itemId: id, editMode };
     }
 
     function loadData() {
+        processModuleConfig();
         // for serverside processing, we just instanciate the table
         // otherwise we do that when we have data
         if (props.serverSide) {
@@ -82,7 +95,6 @@
         } else {
             getItems(dnnConfig, (resp) => {
                 items.value = resp.items; // give the items to the vue app too, in case we need them for something outside of datatables
-                canEdit.value = resp.canEdit;
 
                 if ($.fn.DataTable.isDataTable(dtSel)) {
                     let dt = $(dtSel).DataTable();
@@ -114,7 +126,7 @@
                         className: "text-right",
                         render: function (data, type, row, meta) {
                             let retval = `<button type="button" class="btn btn-secondary mr-1" data-method="openItem" data-edit="false" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.View}</button>`;
-                            if (canEdit.value) {
+                            if (moduleConfig.canEdit) {
                                 retval += `<button type="button" class="btn btn-secondary" data-method="openItem" data-edit="true" data-cbckix="${openItemCallbackIndex}" data-id="${row.id}">${resx.Edit}</button>`;
                             }
                             return retval;
@@ -136,6 +148,7 @@
                 dtoptions = {
                     ...dtoptions,
                     ...{
+                        searchDelay: 500,
                         serverSide: true,
                         ajax: {
                             url: `${dnnConfig.apiBaseUrl}/Item/DtProcessing`,
