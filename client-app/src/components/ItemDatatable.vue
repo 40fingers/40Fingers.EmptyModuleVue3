@@ -62,7 +62,6 @@
 
         // we add our openItem functions to it, and keep the index (which is index minus 1)
         openItemCallbackIndex = window.dtCallBacks.push(openItem) - 1;
-        console.log("onMounted.loadData");
         loadData();
     })
 
@@ -82,7 +81,6 @@
             }
         } else {
             getItems(dnnConfig, (resp) => {
-                console.log("getitems done");
                 items.value = resp.items; // give the items to the vue app too, in case we need them for something outside of datatables
                 canEdit.value = resp.canEdit;
 
@@ -138,9 +136,16 @@
                 dtoptions = {
                     ...dtoptions,
                     ...{
-                        processing: true,
                         serverSide: true,
-                        ajax: `${dnnConfig.apiBaseUrl}/Datatables/Processing`,
+                        ajax: {
+                            url: `${dnnConfig.apiBaseUrl}/Item/DtProcessing`,
+                            type: "POST",
+                            headers: {
+                                "moduleid": dnnConfig.moduleId,
+                                "tabid": dnnConfig.tabId,
+                                "RequestVerificationToken": dnnConfig.rvt,
+                            },
+                        },
                     }
                 }
             } else {

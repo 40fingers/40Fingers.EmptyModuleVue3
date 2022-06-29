@@ -9,9 +9,11 @@ using System.Threading;
 using DotNetNuke.UI.Modules;
 using DotNetNuke.Common.Utilities;
 using System.Collections.Generic;
+using System.Data;
 using System.Net;
 using DotNetNuke.Data;
 using DotNetNuke.Security.Permissions;
+using FortyFingers.EmptyModuleVue3.Components;
 using FortyFingers.EmptyModuleVue3.Components.BaseClasses;
 using FortyFingers.EmptyModuleVue3.Data;
 using FortyFingers.EmptyModuleVue3.Services.ViewModels;
@@ -24,6 +26,18 @@ namespace FortyFingers.EmptyModuleVue3.Services
     public class ItemController : ApiControllerBase
     {
         public ItemController() { }
+
+        [HttpGet]
+        [ActionName("GetConfig")]
+        public HttpResponseMessage GetConfig(int itemId)
+        {
+            var retval = new ModuleConfigModel()
+            {
+                CanEdit = ModulePermissionController.HasModulePermission(ActiveModule.ModulePermissions, "EDIT")
+            };
+
+            return Request.CreateResponse(retval);
+        }
 
         [HttpGet]
         [ActionName("GetItem")]
@@ -117,36 +131,50 @@ namespace FortyFingers.EmptyModuleVue3.Services
         [HttpPost]
         [HttpGet]
         [AllowAnonymous]
-        public HttpResponseMessage DtProcessing()
+        public HttpResponseMessage DtProcessing(DatatablesProcessingModel model)
         {
-            var req = Request.RequestUri.Query;
+            var retval = new DatatableProcessingResultModel<ItemViewModel>();
+            var items = DtSearch(model, out var totalResultsCount, out var filteredResultsCount);
 
-            return new HttpResponseMessage(HttpStatusCode.OK);
+            // retval.CanEdit = ModulePermissionController.HasModulePermission(ActiveModule.ModulePermissions, "EDIT");
+            var retvalData = new List<ItemViewModel>();
+            items.ForEach(i => retvalData.Add(new ItemViewModel(i)));
+            retval.Data = retvalData;
+            retval.Draw = model.draw;
+            retval.RecordsTotal = totalResultsCount;
+            retval.RecordsFiltered = filteredResultsCount;
+
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, retval);
         }
 
-        private Item Create(ItemViewModel item)
+        private List<Item> DtSearch(DatatablesProcessingModel model, 
+            out int totalResultsCount,
+            out int filteredResultsCount)
         {
-            Item t = new Item
+            List<Item> retval = null;
+            using (var dctx = DataContext.Instance())
             {
-                ItemName = item.Name,
-                ItemDescription = item.Description,
-                AssignedUserId = item.AssignedUser,
-                ModuleId = ActiveModule.ModuleID,
-                CreatedByUserId = UserInfo.UserID,
-                LastModifiedByUserId = UserInfo.UserID,
-                CreatedOnDate = DateTime.UtcNow,
-                LastModifiedOnDate = DateTime.UtcNow
-            };
-            // TODO: Implement Save
+                var rep = dctx.GetRepository<Item>();
 
-            return t;
-        }
+                var whereClause = $"{nameof(Item.ModuleId)}=@0";
+                // get the total number of records
+                totalResultsCount = dctx.ExecuteScalar<int>(CommandType.Text, $"SELECT COUNT(*) FROM {Common.GetTableName<Item>()} WHERE {whereClause}", ActiveModule.ModuleID);
 
-        private Item Update(ItemViewModel item)
-        {
-            Item retval = null;
+                if (!string.IsNullOrWhiteSpace(model.search?.value))
+                {
+                    var searchValue = PortalSecurity.Instance.InputFilter(model.search.value, PortalSecurity.FilterFlag.NoSQL);
 
-            // TODO: Implement
+                    whereClause +=
+                        $" AND ({nameof(Item.ItemName)} LIKE '%{string.IsNullOrWhiteSpace(searchValue)}%' OR {nameof(Item.ItemDescription)} LIKE ItemName LIKE '%{string.IsNullOrWhiteSpace(searchValue)}%')";
+                }
+                // get the filtered number of records
+                filteredResultsCount = dctx.ExecuteScalar<int>(CommandType.Text, $"SELECT COUNT(*) FROM {Common.GetTableName<Item>()} WHERE {whereClause}", ActiveModule.ModuleID);
+
+                // get the items
+                var pageSize = model.length;
+                var pageIndex = model.start == 0 ? 0 : (int)Math.Floor((decimal)model.start / pageSize);
+                retval = rep.Find(pageIndex, pageSize, $"WHERE {whereClause}", ActiveModule.ModuleID).ToList();
+            }
 
             return retval;
         }

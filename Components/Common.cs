@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using DotNetNuke.ComponentModel.DataAnnotations;
 using Newtonsoft.Json.Linq;
 
 namespace FortyFingers.EmptyModuleVue3.Components
@@ -19,6 +20,16 @@ namespace FortyFingers.EmptyModuleVue3.Components
             {
                 return false;
             }
+        }
+
+        public static string GetTableName<T>()
+        {
+            var tableNameAttribute = typeof(T).GetCustomAttributes(typeof(TableNameAttribute), true).FirstOrDefault();
+            if (tableNameAttribute != null && tableNameAttribute is TableNameAttribute dnAttribute)
+            {
+                return dnAttribute.TableName;
+            }
+            return null;
         }
 
     }
