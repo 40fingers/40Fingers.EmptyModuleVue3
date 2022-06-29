@@ -40,8 +40,8 @@
     const window = inject("window");
     const $ = inject("jQuery");
 
-    // add watch for canEdit
-    // this will get triggered when the canEdit.value changes
+    // add watch for moduleConfig
+    // this will get triggered when the moduleConfig.value changes
     // needed to show/hide the button manually, since it is inside of datatables and not managed by Vue
     watch(moduleConfig, (newValue, prvValue) => {
         if (newValue.canEdit === prvValue.canEdit) return;
@@ -138,7 +138,8 @@
                         const id = $(this).attr("data-id");
                         const edit = $(this).attr("data-edit") == "true";
                         const ix = Number($(this).attr("data-cbckix"));
-                        // here we're calling into the Vue component from the outside, so we're doing that through the array we manage above
+                        // here we're calling into the Vue component from the outside, 
+                        // so we're doing that through the array we manage above
                         const fn = window.dtCallBacks[ix];
                         fn(id, edit);
                     });
