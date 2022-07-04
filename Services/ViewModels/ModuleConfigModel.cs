@@ -11,8 +11,13 @@ namespace FortyFingers.EmptyModuleVue3.Services.ViewModels
         [JsonProperty("canEdit")]
         public bool CanEdit { get; set; }
         [JsonProperty("showList")]
+        // TODO: Make this a setting
         public bool ShowList { get; set; } = false;
         [JsonProperty("showDatatable")]
+        // TODO: Make this a setting
         public bool ShowDatatable { get; set; } = true;
+        [JsonProperty("processDatatableServerside")]
+        // TODO: Make this a setting
+        public bool ProcessDatatableServerside { get; set; } = true;
     }
 }

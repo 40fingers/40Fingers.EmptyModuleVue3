@@ -1,23 +1,13 @@
 ﻿<h3>EmptyModuleVue3</h3>
-<p class="Contributor">
-	Christoc.com <br />
-	<a href="mailto:modules@christoc.com">modules@christoc.com</a><br />
-	<a href=http://www.christoc.com>http://www.christoc.com</a><br />
-</p>
-<hr/>
-<div class="License">
+<div>
 	<h3>About the EmptyModuleVue3</h3>
-	<p class="Owner">
-		<b>Version CHANGEME</b><br /><br />
+	<p>
+		A getting-started module by <a href="https://www.40fingers.net">40FINGERS</a> to get you started building a VueJS 3 module for DNN.
 	</p>
-	<p>Description about version.</p>
-	
-	<h4>Bug Fixes</h4>
+	<h4>Features</h4>
 	<ul>
-			<li>List</li>
-			<li>of</li>
-			<li>bug</li>
-			<li>fixes</li>
+			<li>List based on plain HTML</li>
+			<li>List using Datatables.net</li>
+			<li>List using Datatables.net with server side processing</li>
 	</ul>
-	
 </div>

@@ -20,12 +20,12 @@
           <scripts>
             <basePath>DesktopModules\40Fingers\EmptyModuleVue3</basePath>
             <script type="Install">
-              <path>SqlDataProvider</path>
+              <path>Sql</path>
               <name>00.00.01.SqlDataProvider</name>
               <version>00.00.01</version>
             </script>
             <script type="UnInstall">
-              <path>SqlDataProvider</path>
+              <path>Sql</path>
               <name>Uninstall.SqlDataProvider</name>
               <version>00.00.01</version>
             </script>

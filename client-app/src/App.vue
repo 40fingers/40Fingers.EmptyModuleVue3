@@ -1,16 +1,18 @@
 <template>
-    <div class="text-left d-none">
-        <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="showList" v-bind="showList">
-            <label class="custom-control-label" for="showList">Show List</label>
+    <div>
+        <div class="text-left d-none">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="showList" v-bind="showList">
+                <label class="custom-control-label" for="showList">Show List</label>
+            </div>
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="switchDatatable" v-bind="showDatatable">
+                <label class="custom-control-label" for="switchDatatable">Show Datatable</label>
+            </div>
         </div>
-        <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="switchDatatable" v-bind="showDatatable">
-            <label class="custom-control-label" for="switchDatatable">Show Datatable</label>
-        </div>
+        <ItemList v-if="moduleConfig.showList" />
+        <ItemDatatable v-if="moduleConfig.showDatatable" :serverSide="moduleConfig.processDatatableServerside"/>
     </div>
-    <ItemList v-if="moduleConfig.showList" />
-    <ItemDatatable v-if="moduleConfig.showDatatable" :serverSide="true"/>
 </template>
 
 <script setup>

@@ -1,6 +1,7 @@
 <template>
     <div class="hello">
         <h1>Settings</h1>
+        <p>Not yet implemented</p>
     </div>
 </template>
 
