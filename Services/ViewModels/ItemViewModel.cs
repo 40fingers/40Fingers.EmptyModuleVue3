@@ -1,9 +1,19 @@
-﻿using FortyFingers.EmptyModuleVue3.Components;
+﻿using System.Collections.Generic;
+using FortyFingers.EmptyModuleVue3.Components;
 using FortyFingers.EmptyModuleVue3.Data;
 using Newtonsoft.Json;
 
 namespace FortyFingers.EmptyModuleVue3.Services.ViewModels
 {
+    [JsonObject(MemberSerialization.OptIn)]
+    public class ItemsViewModel
+    {
+        [JsonProperty("canEdit")]
+        public bool CanEdit { get; set; }
+        [JsonProperty("items")]
+        public List<ItemViewModel> Items { get; set; } = new List<ItemViewModel>();
+    }
+
     [JsonObject(MemberSerialization.OptIn)]
     public class ItemViewModel
     {
@@ -13,14 +23,6 @@ namespace FortyFingers.EmptyModuleVue3.Services.ViewModels
             Name = t.ItemName;
             Description = t.ItemDescription;
             AssignedUser = t.AssignedUserId;
-        }
-
-        public ItemViewModel(Item t, string editUrl)
-        {
-            Id = t.Id;
-            Name = t.ItemName;
-            Description = t.ItemDescription;
-            EditUrl = editUrl;
         }
 
 
@@ -38,7 +40,5 @@ namespace FortyFingers.EmptyModuleVue3.Services.ViewModels
         [JsonProperty("assignedUser")]
         public int? AssignedUser { get; set; }
 
-        [JsonProperty("editUrl")]
-        public string EditUrl { get; }
     }
 }

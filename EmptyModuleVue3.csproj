@@ -92,21 +92,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Components\BaseClasses\ApiControllerBase.cs" />
+    <Compile Include="Components\Common.cs" />
     <Compile Include="Components\FeatureController.cs" />
     <Compile Include="Data\Item.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\ItemController.cs" />
-    <Compile Include="Services\UserController.cs" />
+    <Compile Include="Services\ResxController.cs" />
+    <Compile Include="Services\ViewModels\DatatablesProcessingModel.cs" />
     <Compile Include="Services\ViewModels\ItemViewModel.cs" />
     <Compile Include="Services\ServiceRouteMapper.cs" />
-    <Compile Include="Services\ViewModels\UserViewModel.cs" />
+    <Compile Include="Services\ViewModels\ModuleConfigModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="BuildScripts\custom.xml" />
     <Content Include="BuildScripts\MSBuild.Community.Tasks.dll" />
+    <Content Include="client-app\babel.config.js" />
+    <Content Include="client-app\public\favicon.ico" />
+    <Content Include="client-app\public\index.html" />
+    <Content Include="client-app\src\assets\api.js" />
+    <Content Include="client-app\src\main.js" />
+    <Content Include="client-app\vue.config.js" />
     <Content Include="License.txt" />
     <Content Include="module.css" />
     <Content Include="ReleaseNotes.txt" />
+    <Content Include="settings-app\babel.config.js" />
+    <Content Include="settings-app\public\favicon.ico" />
+    <Content Include="settings-app\public\index.html" />
+    <Content Include="settings-app\src\main.js" />
+    <Content Include="settings-app\vue.config.js" />
     <Content Include="_external\DotNetNuke.dll" />
     <Content Include="_external\DotNetNuke.Web.dll" />
     <Content Include="_external\DotNetNuke.WebUtility.dll" />
@@ -122,12 +135,7 @@
     <Content Include="App_LocalResources\View.resx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_LocalResources\Edit.resx" />
     <Content Include="App_LocalResources\Settings.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="SqlDataProvider\00.00.01.SqlDataProvider" />
-    <Content Include="SqlDataProvider\Uninstall.SqlDataProvider" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -143,10 +151,38 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scripts\" />
+    <Folder Include="settings-app\src\assets\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Sql\00.00.01.SqlDataProvider" />
     <Content Include="Sql\Uninstall.SqlDataProvider" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\src\App.vue" />
+    <Content Include="client-app\src\components\ItemList.vue" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\jsconfig.json" />
+    <Content Include="client-app\package-lock.json" />
+    <Content Include="client-app\package.json" />
+    <Content Include="client-app\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="settings-app\jsconfig.json" />
+    <Content Include="settings-app\package-lock.json" />
+    <Content Include="settings-app\package.json" />
+    <Content Include="settings-app\README.md" />
+    <Content Include="settings-app\src\App.vue" />
+    <Content Include="settings-app\src\components\SettingsPage.vue" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\src\components\_template.vue" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\src\components\ItemDetail.vue" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="client-app\src\components\ItemDatatable.vue" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -170,6 +206,8 @@
     <PackageName>EmptyModuleVue3</PackageName>
   </PropertyGroup>
   <Import Project="BuildScripts\ModulePackage.Targets" />
+  <Target Name="BeforeBuild" DependsOnTargets="BuildVueClientApp">
+  </Target>
   <Target Name="AfterBuild" DependsOnTargets="PackageAndDeploy">
   </Target>
 </Project>

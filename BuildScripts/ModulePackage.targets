@@ -30,41 +30,18 @@
       <Output TaskParameter="Value" PropertyName="Version" />
     </XmlRead>
 
-    <!--in VS 2012 we exclude the packages folder -->
     <ItemGroup>
       <InstallInclude Include="**\*.cshtml" Exclude="packages\**" />
       <InstallInclude Include="**\*.ascx" Exclude="packages\**" />
       <InstallInclude Include="**\*.asmx" Exclude="packages\**" />
-      <InstallInclude Include="**\*.css" Exclude="packages\**" />
-      <InstallInclude Include="**\*.html" Exclude="packages\**" />
-      <InstallInclude Include="**\*.htm" Exclude="packages\**" />
-      <InstallInclude Include="**\*.resx" Exclude="packages\**" />
+      <InstallInclude Include="**\*.css" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.html" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.htm" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.resx" Exclude="packages\**;client-app\**;settings-app\**" />
       <InstallInclude Include="**\*.aspx" Exclude="packages\**" />
-      <InstallInclude Include="**\*.js" Exclude="packages\**" />
-      <InstallInclude Include="**\*.txt"  Exclude="**\obj\**;**\_ReSharper*\**;packages\**;**\.git\**;" />
-      <InstallInclude Include="**\images\**" Exclude="packages\**" />
-      
-    </ItemGroup>
-
-    <ItemGroup>
-      <InstallInclude Include="**\*.cshtml" />
-      <SourceInclude Include="**\*.ascx" />
-      <SourceInclude Include="**\*.asmx" />
-      <SourceInclude Include="**\*.css" />
-      <SourceInclude Include="**\*.xsl" />
-      <SourceInclude Include="**\*.html" />
-      <SourceInclude Include="**\*.htm" />
-      <SourceInclude Include="**\*.resx" />
-      <SourceInclude Include="**\*.xml" Exclude="**\obj\**;**\_ReSharper*\**;**\.git\**;packages\**;" />
-      <SourceInclude Include="**\*.aspx" />
-      <SourceInclude Include="**\*.js" />
-      <SourceInclude Include="**\*.txt" Exclude="**\obj\**;**\_ReSharper*\**;**\.git\**;packages\**;" />
-      <SourceInclude Include="**\images\**" />
-      <SourceInclude Include="**\*.cs" />
-      <SourceInclude Include="**\*.cs.designer" />
-      <SourceInclude Include="**\*.csproj" />
-      <SourceInclude Include="**\*.targets" />
-      <SourceInclude Include="**\*.sln" />
+      <InstallInclude Include="**\*.js" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.txt"  Exclude="**\obj\**;**\_ReSharper*\**;packages\**;**\.git\**;client-app\**;settings-app\**;" />
+      <InstallInclude Include="**\images\**" Exclude="packages\**;client-app\**;settings-app\**" />
     </ItemGroup>
     
     <CreateItem Include="$(DNNFileName).dnn">
@@ -130,14 +107,14 @@
       <InstallInclude Include="**\*.cshtml" Exclude="packages\**" />
       <InstallInclude Include="**\*.ascx" Exclude="packages\**" />
       <InstallInclude Include="**\*.asmx" Exclude="packages\**" />
-      <InstallInclude Include="**\*.css" Exclude="packages\**" />
-      <InstallInclude Include="**\*.html" Exclude="packages\**" />
-      <InstallInclude Include="**\*.htm" Exclude="packages\**" />
-      <InstallInclude Include="**\*.resx" Exclude="packages\**" />
+      <InstallInclude Include="**\*.css" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.html" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.htm" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.resx" Exclude="packages\**;client-app\**;settings-app\**" />
       <InstallInclude Include="**\*.aspx" Exclude="packages\**" />
-      <InstallInclude Include="**\*.js" Exclude="packages\**" />
-      <InstallInclude Include="**\*.txt"  Exclude="**\obj\**;**\_ReSharper*\**;packages\**;**\.git\**;" />
-      <InstallInclude Include="**\images\**" Exclude="packages\**" />
+      <InstallInclude Include="**\*.js" Exclude="packages\**;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\*.txt"  Exclude="**\obj\**;**\_ReSharper*\**;packages\**;**\.git\**;;client-app\**;settings-app\**" />
+      <InstallInclude Include="**\images\**" Exclude="packages\**;client-app\**;settings-app\**" />
     </ItemGroup>
     <Copy SourceFiles="@(InstallInclude)" DestinationFolder="$(MSBuildDnnPath)\DesktopModules\$(CompanyName)\$(ModuleName)\%(RecursiveDir)" />
 
@@ -147,5 +124,12 @@
     <CallTarget Targets="DeployModule"/>
 		<CallTarget Targets="PackageModule"/>
 	</Target>
+
+  <Target Name="BuildVueClientApp">
+    <Exec Condition="$(Configuration) == 'Debug'" Command="npm run-script build-client-dev" />
+    <Exec Condition="$(Configuration) == 'Debug'" Command="npm run-script build-settings-dev" />
+    <Exec Condition="$(Configuration) == 'Release'" Command="npm run-script build-client" />
+    <Exec Condition="$(Configuration) == 'Release'" Command="npm run-script build-settings" />
+  </Target>
 
 </Project>

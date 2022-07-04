@@ -9,6 +9,11 @@ using System.Threading;
 using DotNetNuke.UI.Modules;
 using DotNetNuke.Common.Utilities;
 using System.Collections.Generic;
+using System.Data;
+using System.Net;
+using DotNetNuke.Data;
+using DotNetNuke.Security.Permissions;
+using FortyFingers.EmptyModuleVue3.Components;
 using FortyFingers.EmptyModuleVue3.Components.BaseClasses;
 using FortyFingers.EmptyModuleVue3.Data;
 using FortyFingers.EmptyModuleVue3.Services.ViewModels;
@@ -22,77 +27,154 @@ namespace FortyFingers.EmptyModuleVue3.Services
     {
         public ItemController() { }
 
-        public HttpResponseMessage Delete(int itemId)
+        [HttpGet]
+        [ActionName("GetConfig")]
+        public HttpResponseMessage GetConfig()
         {
-            // TODO: Implement
-
-            return Request.CreateResponse(System.Net.HttpStatusCode.NoContent);
-        }
-
-        public HttpResponseMessage Get(int itemId)
-        {
-            // TODO: Implement
-
-            return Request.CreateResponse(new ItemViewModel());
-        }
-
-        public HttpResponseMessage GetList()
-        {
-            var retval = new List<ItemViewModel>();
-            var items = new List<Item>();
-
-            if (Globals.IsEditMode())
+            var retval = new ModuleConfigModel()
             {
-                // TODO: Implement
+                CanEdit = ModulePermissionController.HasModulePermission(ActiveModule.ModulePermissions, "EDIT")
+            };
+
+            return Request.CreateResponse(retval);
+        }
+
+        [HttpGet]
+        [ActionName("GetItem")]
+        public HttpResponseMessage GetItem(int itemId)
+        {
+            ItemViewModel retval = null;
+
+            if (itemId > 0)
+            {
+                using (var dctx = DataContext.Instance())
+                {
+                    var rep = dctx.GetRepository<Item>();
+                    var item = rep.GetById(itemId);
+                    retval = new ItemViewModel(item);
+                }
             }
             else
             {
-                // TODO: Implement
+                retval = new ItemViewModel();
             }
+            return Request.CreateResponse(retval ?? new ItemViewModel());
+        }
+
+        [HttpGet]
+        [ActionName("GetList")]
+        public HttpResponseMessage GetList()
+        {
+            var retval = new ItemsViewModel();
+            var items = new List<Item>();
+
+            using (var dctx = DataContext.Instance())
+            {
+                var rep = dctx.GetRepository<Item>();
+                items = rep.Get().ToList();
+            }
+
+            retval.CanEdit = ModulePermissionController.HasModulePermission(ActiveModule.ModulePermissions, "EDIT");
+
+            items.ForEach(i => retval.Items.Add(new ItemViewModel(i)));
 
             return Request.CreateResponse(retval);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]
+        [ActionName("Delete")]
+        public HttpResponseMessage Delete(int itemId)
+        {
+            using (var dctx = DataContext.Instance())
+            {
+                var rep = dctx.GetRepository<Item>();
+                rep.Delete($"WHERE {nameof(Item.Id)} = @0", itemId);
+            }
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, new { });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [DnnModuleAuthorize(AccessLevel = SecurityAccessLevel.Edit)]
+        [ActionName("Save")]
         public HttpResponseMessage Save(ItemViewModel item)
         {
-            if (item.Id > 0)
+            using (var dctx = DataContext.Instance())
             {
-                // TODO: Implement
-                return Request.CreateResponse(System.Net.HttpStatusCode.NoContent);
-            }
-            else
-            {
-                // TODO: Implement
-                return Request.CreateResponse(item.Id);
-            }
+                var rep = dctx.GetRepository<Item>();
+                var saveItem = item.Id > 0 ? rep.GetById(item.Id) : new Item()
+                {
+                    ModuleId = this.ActiveModule?.ModuleID ?? 1354,
+                    AssignedUserId = UserInfo.UserID,
+                    CreatedByUserId = UserInfo.UserID,
+                    CreatedOnDate = DateTime.Now
+                };
+                saveItem.ItemName = item.Name;
+                saveItem.ItemDescription = item.Description;
+                saveItem.LastModifiedByUserId = UserInfo.UserID;
+                saveItem.LastModifiedOnDate = DateTime.Now;
 
+                if (saveItem.Id > 0)
+                {
+                    rep.Update(saveItem);
+                }
+                else
+                {
+                    rep.Insert(saveItem);
+                }
+            }
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, new { });
         }
 
-        private Item Create(ItemViewModel item)
+        [HttpPost]
+        [HttpGet]
+        [AllowAnonymous]
+        public HttpResponseMessage DtProcessing(DatatablesProcessingModel model)
         {
-            Item t = new Item
-            {
-                ItemName = item.Name,
-                ItemDescription = item.Description,
-                AssignedUserId = item.AssignedUser,
-                ModuleId = ActiveModule.ModuleID,
-                CreatedByUserId = UserInfo.UserID,
-                LastModifiedByUserId = UserInfo.UserID,
-                CreatedOnDate = DateTime.UtcNow,
-                LastModifiedOnDate = DateTime.UtcNow
-            };
-            // TODO: Implement Save
+            var retval = new DatatableProcessingResultModel<ItemViewModel>();
+            var items = DtSearch(model, out var totalResultsCount, out var filteredResultsCount);
 
-            return t;
+            // retval.CanEdit = ModulePermissionController.HasModulePermission(ActiveModule.ModulePermissions, "EDIT");
+            var retvalData = new List<ItemViewModel>();
+            items.ForEach(i => retvalData.Add(new ItemViewModel(i)));
+            retval.Data = retvalData;
+            retval.Draw = model.draw;
+            retval.RecordsTotal = totalResultsCount;
+            retval.RecordsFiltered = filteredResultsCount;
+
+            return Request.CreateResponse(System.Net.HttpStatusCode.OK, retval);
         }
 
-        private Item Update(ItemViewModel item)
+        private List<Item> DtSearch(DatatablesProcessingModel model, 
+            out int totalResultsCount,
+            out int filteredResultsCount)
         {
-            Item retval = null;
+            List<Item> retval = null;
+            using (var dctx = DataContext.Instance())
+            {
+                var rep = dctx.GetRepository<Item>();
 
-            // TODO: Implement
+                var whereClause = $"{nameof(Item.ModuleId)}=@0";
+                // get the total number of records
+                totalResultsCount = dctx.ExecuteScalar<int>(CommandType.Text, $"SELECT COUNT(*) FROM {Common.GetTableName<Item>()} WHERE {whereClause}", ActiveModule.ModuleID);
+
+                if (!string.IsNullOrWhiteSpace(model.search?.value))
+                {
+                    var searchValue = PortalSecurity.Instance.InputFilter(model.search.value, PortalSecurity.FilterFlag.NoSQL);
+
+                    whereClause +=
+                        $" AND ({nameof(Item.ItemName)} LIKE '%{searchValue}%' OR {nameof(Item.ItemDescription)} LIKE '%{searchValue}%')";
+                }
+                // get the filtered number of records
+                filteredResultsCount = dctx.ExecuteScalar<int>(CommandType.Text, $"SELECT COUNT(*) FROM {Common.GetTableName<Item>()} WHERE {whereClause}", ActiveModule.ModuleID);
+
+                // get the items
+                var pageSize = model.length;
+                var pageIndex = model.start == 0 ? 0 : (int)Math.Floor((decimal)model.start / pageSize);
+                retval = rep.Find(pageIndex, pageSize, $"WHERE {whereClause}", ActiveModule.ModuleID).ToList();
+            }
 
             return retval;
         }
