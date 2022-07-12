@@ -11,8 +11,8 @@ namespace FortyFingers.EmptyModuleVue3.Services
             mapRouteManager.MapHttpRoute(
                 moduleFolderName: "40Fingers/EmptyModuleVue3",
                 routeName: "default",
-                url: "{controller}/{action}/{itemId}",
-                defaults: new { itemId = RouteParameter.Optional },
+                url: "{controller}/{action}",
+                //defaults: new { itemId = RouteParameter.Optional },
                 namespaces: new[] { "FortyFingers.EmptyModuleVue3.Services" });
         }
     }

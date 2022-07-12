@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Web;
 using DotNetNuke.Security;
@@ -38,7 +39,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
                 resx.Add(key, val);
             }
 
-            return Request.CreateResponse(resx);
+            return Request.CreateResponse(HttpStatusCode.OK, resx);
         }
 
     }

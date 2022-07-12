@@ -36,7 +36,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
                 CanEdit = ModulePermissionController.HasModulePermission(ActiveModule.ModulePermissions, "EDIT")
             };
 
-            return Request.CreateResponse(retval);
+            return Request.CreateResponse(HttpStatusCode.OK, retval);
         }
 
         [HttpGet]
@@ -58,7 +58,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
             {
                 retval = new ItemViewModel();
             }
-            return Request.CreateResponse(retval ?? new ItemViewModel());
+            return Request.CreateResponse(HttpStatusCode.OK, retval ?? new ItemViewModel());
         }
 
         [HttpGet]
@@ -78,7 +78,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
 
             items.ForEach(i => retval.Items.Add(new ItemViewModel(i)));
 
-            return Request.CreateResponse(retval);
+            return Request.CreateResponse(HttpStatusCode.OK, retval);
         }
 
         [HttpPost]
@@ -162,7 +162,7 @@ namespace FortyFingers.EmptyModuleVue3.Services
 
                 if (!string.IsNullOrWhiteSpace(model.search?.value))
                 {
-                    var searchValue = PortalSecurity.Instance.InputFilter(model.search.value, PortalSecurity.FilterFlag.NoSQL);
+                    var searchValue = new PortalSecurity().InputFilter(model.search.value, PortalSecurity.FilterFlag.NoSQL);
 
                     whereClause +=
                         $" AND ({nameof(Item.ItemName)} LIKE '%{searchValue}%' OR {nameof(Item.ItemDescription)} LIKE '%{searchValue}%')";
@@ -178,5 +178,34 @@ namespace FortyFingers.EmptyModuleVue3.Services
 
             return retval;
         }
+
+        public T ContentJ<T>() where T : JToken
+        {
+            // get content from the request into a string
+            HttpContent requestContent = Request.Content;
+            string jsonContent = requestContent.ReadAsStringAsync().Result;
+
+            // see if it's actually JSON
+            if (!jsonContent.IsJson())
+            {
+                throw new Exception($"Request body is not valid JSON");
+            }
+
+            // Parse the json string
+            var jtoken = JToken.Parse(jsonContent);
+            // see if it's the correct type
+            if (typeof(T) == typeof(JToken) ||
+                (jtoken.Type == JTokenType.Array && typeof(T) == typeof(JArray)) ||
+                (jtoken.Type == JTokenType.Object && typeof(T) == typeof(JObject)))
+            {
+                // we can safely return it
+                return (T)jtoken;
+            }
+            else
+            {
+                throw new Exception($"Request body is not of type {typeof(T).Name}");
+            }
+        }
+
     }
 }
